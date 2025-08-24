@@ -7,7 +7,7 @@ LIBS = -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 
 # Source and output
 BUILD_DIR = build
-TARGET_NAME = out.a
+TARGET_NAME = a.out
 TARGET = $(BUILD_DIR)/$(TARGET_NAME)
 
 SRCDIR = src
