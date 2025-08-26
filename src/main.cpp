@@ -47,7 +47,6 @@ int main() {
 	}
 
 	Shader ourShader("./shader/shader.vs", "./shader/shader.fs");
-	float offset = 0.5f;
 
 	// ### USING ONLY VBOs ###
 	// // Gen VBO
@@ -107,7 +106,6 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		ourShader.use();
-		ourShader.setFloat("offset", offset);
 
 		// float timeValue = glfwGetTime();
 		// float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
