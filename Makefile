@@ -6,26 +6,41 @@ GXXFLAGS = -Wall
 LIBS = -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 
 # Source and output
+SRC_DIR = src
 BUILD_DIR = build
-TARGET_NAME = a.out
-TARGET = $(BUILD_DIR)/$(TARGET_NAME)
+OBJ_DIR = $(BUILD_DIR)/obj
 
-SRCDIR = src
-SOURCES = $(wildcard $(SRCDIR)/*.cpp)
-OBJECTS = $(patsubst $(SRCDIR)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCES))
+SOURCES = $(shell find $(SRC_DIR) -name '*.cpp')
+OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
 
-all: $(BUILD_DIR) $(TARGET)
+TARGET = $(BUILD_DIR)/a.out
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS) | $(BUILD_DIR)
+	$(GXX) $(OBJECTS) $(LIBS) -o $(TARGET)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+	@mkdir -p $(dir $@)
+	$(GXX) $(GXXFLAGS) -c $< -o $@
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-$(TARGET): $(OBJECTS)
-	$(CXX) $(OBJECTS) $(LIBS) -o $(TARGET)
-
-$(BUILD_DIR)/%.o: $(SRCDIR)/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -rf $(BUILD_DIR)
 
-.PHONY: all clean
+rebuild: clean all
+
+run: $(TARGET)
+	./$(TARGET)
+
+debug:
+	@echo "Sources: $(SOURCES)"
+	@echo "Objects: $(OBJECTS)"
+	@echo "Target: $(TARGET)"
+
+.PHONY: all clean rebuild run debug
