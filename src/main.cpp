@@ -18,10 +18,10 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 
 float vertices[] = {
-	 0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 0.0f,  1.0f, 0.0f, // TOP   RIGHT
-	 0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f,  1.0f, 1.0f, // LOWER RIGHT
-	-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f, // LOWER LEFT
-	-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f, // TOP   LEFT
+	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f, // TOP   RIGHT
+	 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f, // LOWER RIGHT
+	-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f, // LOWER LEFT
+	-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 0.0f, // TOP   LEFT
 };
 
 unsigned int indices[] = {
@@ -121,7 +121,23 @@ int main() {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	} else {
-		std::cout << "ERROR: Failed to load texture" << std::endl;
+		std::cout << "ERROR: Failed to load texture nr 1" << std::endl;
+	}
+	stbi_image_free(data);
+
+	unsigned int texture2;
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	data = stbi_load("textures/awesomeface.png", &width, &height, &nrChannels, 0);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	} else {
+		std::cout << "ERROR: Failed to load texture nr 2" << std::endl;
 	}
 	stbi_image_free(data);
 
@@ -136,10 +152,15 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Bind texture
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		// Use shader program
 		ourShader.use();
+		ourShader.setInt("texture", 0);
+		ourShader.setInt("texture2", 1);
 
 		// Draw elements
 		glBindVertexArray(VAO);
