@@ -12,11 +12,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "header/image/stb_image.h"
 
-
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-void framebufferSizeCallback(GLFWwindow *window, int width, int height);
+void frameBufferSizeCallback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 
 float vertices[] = {
@@ -46,7 +45,7 @@ int main() {
 		return 1;
 	}
 	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+	glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
 
 	// Load GL function pointers
 	if (!gladLoadGL(glfwGetProcAddress)) {
@@ -115,7 +114,7 @@ int main() {
 	ourShader.use();
 	ourShader.setInt("texture", 0);
 
-	while (!glfwWindowShouldClose(window)) {
+		while (!glfwWindowShouldClose(window)) {
 		// Input
 		processInput(window);
 
@@ -127,14 +126,23 @@ int main() {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 
-		// Create transormation matrix
-		glm::mat4 trans = glm::mat4(1.0f);
-		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-
 		ourShader.use();
-		unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+		glm::mat4 model = glm::mat4(1.0f);
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 projection;
+
+		model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		projection = glm::perspective(glm::radians(45.0f),  (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+		unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
+		unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
+		unsigned int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
+
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		// Draw elements
 		glBindVertexArray(VAO);
@@ -149,7 +157,7 @@ int main() {
 	return 0;
 }
 
-void framebufferSizeCallback(GLFWwindow *window, int width, int height) {
+void frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
 	    glViewport(0, 0, width, height);
 }
 
