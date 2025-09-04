@@ -3,20 +3,17 @@
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
+#include "header/matrix/matrices.h"
+#include "header/vector/vectors.h"
 #include "header/shader/shader.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "header/image/stb_image.h"
 
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
 void frameBufferSizeCallback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
+void calculateOrthFrustum(Matrix4 *projectionMatrix, int width, int height, float near, float far);
 
 float vertices[] = {
 	 0.5f,  0.5f, 0.0f,	1.0f, 0.0f, // TOP   RIGHT
@@ -31,6 +28,9 @@ unsigned int indices[] = {
 };
 
 int main() {
+	unsigned int width = 800;
+	unsigned int height = 600;
+
 	// GLFW init
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -38,7 +38,7 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Winodw creation
-	GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+	GLFWwindow *window = glfwCreateWindow(width, height, "LearnOpenGL", NULL, NULL);
 	if (!window) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -54,6 +54,11 @@ int main() {
 	}
 
 	Shader ourShader("./shader/shader.vs", "./shader/shader.fs");
+	Matrix4 projectionMatrix = Matrix4(	0, 0, 0, 0, 
+						0, 0, 0, 0, 
+						0, 0, 0, 0, 
+						0, 0, 0, 0	);
+	calculateOrthFrustum(&projectionMatrix, width, height, 0.1f, 100.0f);
 
 	// Set up vertex buffers and configure vertex attributes
 	// ### USING VAO ###
@@ -98,10 +103,10 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	int width, height, nrChannels;
-	unsigned char *data = stbi_load("textures/container.jpg", &width, &height, &nrChannels, 0);
+	int imgWidth, imgHeight, nrChannels;
+	unsigned char *data = stbi_load("textures/container.jpg", &imgWidth, &imgHeight, &nrChannels, 0);
 	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	} else {
 		std::cout << "ERROR: Failed to load texture nr 1" << std::endl;
@@ -114,7 +119,7 @@ int main() {
 	ourShader.use();
 	ourShader.setInt("texture", 0);
 
-		while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(window)) {
 		// Input
 		processInput(window);
 
@@ -127,22 +132,6 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, texture);
 
 		ourShader.use();
-
-		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection;
-
-		model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-		projection = glm::perspective(glm::radians(45.0f),  (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-
-		unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
-		unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
-		unsigned int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
-
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		// Draw elements
 		glBindVertexArray(VAO);
@@ -158,9 +147,27 @@ int main() {
 }
 
 void frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
-	    glViewport(0, 0, width, height);
+	glViewport(0, 0, width, height);
+	// calculateOrthFrustum();
 }
 
 void processInput(GLFWwindow *window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
+void calculateOrthFrustum(Matrix4 *projectionMatrix, int width, int height, float near, float far) {
+	float mat0 = 2.0f / (float)width;
+	float mat5 = 2.0f / (float)height;
+	float mat10 = -2.0f / (far - near);
+	float mat11 = -((far + near)/(far - near));
+
+	float row0[4] = {mat0, 0, 0, 0};
+	float row1[4] = {0, mat5, 0, 0};
+	float row2[4] = {0, 0, mat10, mat11};
+	float row3[4] = {0, 0, 0, 1};
+
+	projectionMatrix->setRow(0, row0);
+	projectionMatrix->setRow(1, row1);
+	projectionMatrix->setRow(2, row2);
+	projectionMatrix->setRow(3, row3);
 }
