@@ -16,10 +16,10 @@ void processInput(GLFWwindow *window);
 void calculateOrthFrustum(Matrix4 *projectionMatrix, int width, int height, float near, float far);
 
 float vertices[] = {
-	 0.5f,  0.5f, 0.0f,	1.0f, 0.0f, // TOP   RIGHT
-	 0.5f, -0.5f, 0.0f,	1.0f, 1.0f, // LOWER RIGHT
-	-0.5f, -0.5f, 0.0f,	0.0f, 1.0f, // LOWER LEFT
-	-0.5f,  0.5f, 0.0f,	0.0f, 0.0f, // TOP   LEFT
+	 80.0f,  80.0f, 0.0f,	1.0f, 0.0f, // TOP   RIGHT
+	 80.0f, -80.0f, 0.0f,	1.0f, 1.0f, // LOWER RIGHT
+	-80.0f, -80.0f, 0.0f,	0.0f, 1.0f, // LOWER LEFT
+	-80.0f,  80.0f, 0.0f,	0.0f, 0.0f, // TOP   LEFT
 };
 
 unsigned int indices[] = {
@@ -28,8 +28,8 @@ unsigned int indices[] = {
 };
 
 int main() {
-	unsigned int width = 800;
-	unsigned int height = 600;
+	unsigned int width = 1280;
+	unsigned int height = 720;
 
 	// GLFW init
 	glfwInit();
@@ -45,6 +45,7 @@ int main() {
 		return 1;
 	}
 	glfwMakeContextCurrent(window);
+
 	glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
 
 	// Load GL function pointers
@@ -54,10 +55,17 @@ int main() {
 	}
 
 	Shader ourShader("./shader/shader.vs", "./shader/shader.fs");
-	Matrix4 projectionMatrix = Matrix4(	0, 0, 0, 0, 
-						0, 0, 0, 0, 
-						0, 0, 0, 0, 
-						0, 0, 0, 0	);
+	
+	Matrix4 modelMatrix = Matrix4(	1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1);
+	
+	Matrix4 viewMatrix = Matrix4(	1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 1, 0,
+					0, 0, -2, 1);
+	Matrix4 projectionMatrix;
 	calculateOrthFrustum(&projectionMatrix, width, height, 0.1f, 100.0f);
 
 	// Set up vertex buffers and configure vertex attributes
@@ -133,6 +141,14 @@ int main() {
 
 		ourShader.use();
 
+		int modelLocation = glGetUniformLocation(ourShader.ID, "model");
+		int viewLocation = glGetUniformLocation(ourShader.ID, "view");
+		int projectionLocation = glGetUniformLocation(ourShader.ID, "projection");
+
+		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, modelMatrix.get());
+		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, viewMatrix.get());
+		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, projectionMatrix.get());
+
 		// Draw elements
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -148,7 +164,6 @@ int main() {
 
 void frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
 	glViewport(0, 0, width, height);
-	// calculateOrthFrustum();
 }
 
 void processInput(GLFWwindow *window) {
