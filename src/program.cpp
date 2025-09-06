@@ -17,7 +17,7 @@ void Program::destroy() {
 	running = false;
 
 	if (windowSetup) {
-		glfwDestryWindow(window);
+		glfwDestroyWindow(window);
 		glfwTerminate();
 	}
 
@@ -26,13 +26,13 @@ void Program::destroy() {
 
 void Program::initWindow(const char *title, int width, int height) {
 	if (windowSetup) {
-		std::cout << "Window already created" << std::enld;
+		std::cout << "Window already created" << std::endl;
 		return;
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION, 3);
-	glfwWinodwHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	window = glfwCreateWindow(width, height, title, NULL, NULL);
 	if (!window) {
 		std::cerr << "Failed to create GLFW window" << std::endl;
@@ -42,7 +42,7 @@ void Program::initWindow(const char *title, int width, int height) {
 	glfwSetFramebufferSizeCallback(window, Program::FramebufferSizeCallback);
 
 	if (!gladLoadGL(glfwGetProcAddress)) {
-		std::cerr << "Failed to initialise GLAD" << std::enld;
+		std::cerr << "Failed to initialise GLAD" << std::endl;
 		return;
 	}
 
@@ -79,6 +79,6 @@ void Program::getFramebufferSize(int *width, int *height) {
 	glfwGetFramebufferSize(window, width, height);
 }
 
-void Program::FramebufferSizeCallback(GLFWWindow *window, int width, int height) {
+void Program::FramebufferSizeCallback(GLFWwindow *window, int width, int height) {
 	glViewport(0, 0, width, height);
 }

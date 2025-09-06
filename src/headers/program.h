@@ -1,8 +1,8 @@
 #ifndef _PROGRAM_H
 #define _PROGRAM_H
 
-#include <GLFW/glfw3.h>
 #include <glad/gl.h>
+#include <GLFW/glfw3.h>
 
 class Program {
 	public:
@@ -16,7 +16,7 @@ class Program {
 
 		void getFramebufferSize(int *width, int *height);
 	private:
-		GLFWWindow *window;
+		GLFWwindow *window;
 
 		bool windowSetup = false;
 		bool running = false;
@@ -24,5 +24,7 @@ class Program {
 		void update();
 		void render();
 
-		static void FramebufferSizeCallback(GLFWWindow *window, int width, int height);
+		static void FramebufferSizeCallback(GLFWwindow *window, int width, int height);
 };
+
+#endif
