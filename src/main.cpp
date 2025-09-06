@@ -8,6 +8,8 @@
 #include "header/vector/vectors.h"
 #include "header/shader/shader.h"
 
+#include "header/entity/entity.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "header/image/stb_image.h"
 
