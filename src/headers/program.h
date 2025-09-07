@@ -1,5 +1,6 @@
-#ifndef _PROGRAM_H
-#define _PROGRAM_H
+#pragma once
+
+#include <iostream>
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
@@ -26,5 +27,3 @@ class Program {
 
 		static void FramebufferSizeCallback(GLFWwindow *window, int width, int height);
 };
-
-#endif
