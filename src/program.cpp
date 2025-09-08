@@ -65,7 +65,7 @@ void Program::run() {
 		// outsource in input handler?
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, GLFW_TRUE);
 		// clear screen
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		glClearColor(0.5f, 0.1f, 0.8f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glfwSwapBuffers(window);

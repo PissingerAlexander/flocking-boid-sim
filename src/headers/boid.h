@@ -15,5 +15,4 @@ class Boid {
 		~Boid();
 
 		void update(const float delta, std::vector<Boid*> boids);
-		void render(unsigned int VAO, unsigned int VBO, unsigned int EBO);
 };
