@@ -45,6 +45,10 @@ Matrix4 Matrix4::operator-(const Matrix4& rhs) const {
 			m[12]-rhs[12], m[13]-rhs[13], m[14]-rhs[14], m[15]-rhs[15]);
 }
 
+Matrix4 Matrix4::operator*(const Matrix4& rhs) const {
+	return Matrix4();
+}
+
 float Matrix4::operator[](int index) const {
 	return m[index];
 }

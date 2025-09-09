@@ -1,6 +1,5 @@
 #pragma once
 
-
 class Matrix4 {
 	public:
 		Matrix4();
@@ -16,7 +15,7 @@ class Matrix4 {
 
 		Matrix4 operator+(const Matrix4& rhs) const;
 		Matrix4 operator-(const Matrix4& rhs) const;
-		// Matrix4 operator*(const Matrix4& rhs) const;
+		Matrix4 operator*(const Matrix4& rhs) const;
 		// Matrix4& operator+=(const Matrix4& rhs);
 		// Matrix4& operator-=(const Matrix4& rhs);
 		// Matrix4& operator*=(const Matrix4& rhs);
