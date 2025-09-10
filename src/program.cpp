@@ -1,3 +1,4 @@
+#include "headers/constants.h"
 #include "headers/program.h"
 
 Program::Program() {
@@ -12,8 +13,6 @@ Program::~Program() {
 }
 
 void Program::destroy() {
-	running = false;
-
 	if (windowSetup) {
 		glfwDestroyWindow(window);
 		glfwTerminate();
@@ -31,6 +30,7 @@ void Program::initWindow(const char *title, int width, int height) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	window = glfwCreateWindow(width, height, title, NULL, NULL);
 	if (!window) {
 		std::cerr << "Failed to create GLFW window" << std::endl;
@@ -55,26 +55,17 @@ void Program::run() {
 		return;
 	}
 
-	running = true;
-	while (running) {
-		if (glfwWindowShouldClose(window)) {
-			running = false;
-			break;
-		}
-		
-		// outsource in input handler?
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, GLFW_TRUE);
-		// clear screen
-		glClearColor(0.5f, 0.1f, 0.8f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+	std::vector<Boid> boids;
 
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
+	initBoids(boids);
+
+	Renderer renderer = Renderer();
+	renderer.init(WIDTH, HEIGHT);
+	renderer.render(window, boids);
 }
 
-void Program::getFramebufferSize(int *width, int *height) {
-	glfwGetFramebufferSize(window, width, height);
+void Program::initBoids(std::vector<Boid>& boids) {
+	boids.push_back(Boid(0.0f, 0.0f, 45.0f));
 }
 
 void Program::FramebufferSizeCallback(GLFWwindow *window, int width, int height) {

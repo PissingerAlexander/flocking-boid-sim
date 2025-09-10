@@ -5,10 +5,13 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
+#include "renderer.h"
+
 class Program {
 	public:
 		Program();
 		~Program();
+
 		void destroy();
 
 		void initWindow(const char *title, int width, int height);
@@ -18,12 +21,9 @@ class Program {
 		void getFramebufferSize(int *width, int *height);
 	private:
 		GLFWwindow *window;
-
 		bool windowSetup = false;
-		bool running = false;
 
-		void update();
-		void render();
+		void initBoids(std::vector<Boid>& boids);
 
 		static void FramebufferSizeCallback(GLFWwindow *window, int width, int height);
 };

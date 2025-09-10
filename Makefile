@@ -1,6 +1,6 @@
 # Complier and flags
 GXX = g++
-GXXFLAGS = -Wall
+GXXFLAGS = -Wall -g
 
 # Libraries to link
 LIBS = -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl

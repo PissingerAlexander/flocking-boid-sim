@@ -11,18 +11,21 @@
 #include "boid.h"
 
 class Renderer {
-	Matrix4 viewMatrix;
-	Matrix4 projectionMatrix;
+	public:
+		Renderer();
+		~Renderer();
 
-	Shader *shader;
+		void init(float width, float height);
+		void render(GLFWwindow *window, const std::vector<Boid>& boids);
 
-	unsigned int VAO, VBO, EBO;
+	private:
+		bool running = false;
 
-	Renderer();
-	~Renderer();
+		Matrix4 viewMatrix;
+		Matrix4 projectionMatrix;
 
-	void init(float width, float height);
-	void render(const std::vector<Boid>& boids);
-	Matrix4 calculateProjectionMatrix(float width, float height);
-	Matrix4 createModelMatrix(Vector2 position, float rotation);
+		unsigned int VAO, VBO, EBO;
+
+		Matrix4 calculateProjectionMatrix(float width, float height);
+		Matrix4 createModelMatrix(Vector2 position, float rotation);
 };

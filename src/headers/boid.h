@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdlib>
-#include <ctime>
 #include <vector>
 
 #include "vector2.h"
