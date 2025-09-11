@@ -15,7 +15,7 @@ class Matrix4 {
 
 		Matrix4 operator+(const Matrix4& rhs) const;
 		Matrix4 operator-(const Matrix4& rhs) const;
-		Matrix4 operator*(const Matrix4& rhs) const;
+		Matrix4 operator*(const Matrix4& n) const;
 		// Matrix4& operator+=(const Matrix4& rhs);
 		// Matrix4& operator-=(const Matrix4& rhs);
 		// Matrix4& operator*=(const Matrix4& rhs);
