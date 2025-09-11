@@ -65,7 +65,8 @@ void Program::run() {
 }
 
 void Program::initBoids(std::vector<Boid>& boids) {
-	boids.push_back(Boid(0.0f, 0.0f, 45.0f));
+	boids.push_back(Boid(5.0f, 5.0f, 2.0f));
+	boids.push_back(Boid(-5.0f, -5.0f, 1.0f));
 }
 
 void Program::FramebufferSizeCallback(GLFWwindow *window, int width, int height) {

@@ -26,18 +26,18 @@ void Renderer::render(GLFWwindow *window, const std::vector<Boid>& boids) {
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, projectionMatrix.get());
 	
 	// Define Vertex and index data for boid
-	// float vertices[] = {
-	// 	0.0f, 1.0f, -1.0f,
-	// 	0.4f, -1.0f, -1.0f,
-	// 	0.0f, -0.5f, -1.0f,
-	// 	-0.4f, -1.0f, -1.0f
-	// };
 	float vertices[] = {
-		0.0f, 10.0f, -1.0f,
-		8.0f, -10.0f, -1.0f,
-		0.0f, -5.0f, -1.0f,
-		-8.0f, -10.0f, -1.0f
+		0.0f, 1.0f, -1.0f,
+		0.6f, -1.0f, -1.0f,
+		0.0f, -0.5f, -1.0f,
+		-0.6f, -1.0f, -1.0f
 	};
+	// float vertices[] = {
+	// 	0.0f, 10.0f, 0.0f,
+	// 	6.0f, -10.0f, 0.0f,
+	// 	0.0f, -5.0f, 0.0f,
+	// 	-6.0f, -10.0f, 0.0f
+	// };
 	unsigned int indices[] = {
 		0, 1, 2,
 		0, 2, 3
@@ -74,7 +74,6 @@ void Renderer::render(GLFWwindow *window, const std::vector<Boid>& boids) {
 		for (const Boid& boid : boids) {
 			// Create ModelMatrix for each boid
 			Matrix4 modelMatrix = createModelMatrix(boid.position, boid.rotation);
-			std::cout << modelMatrix[0] << std::endl;
 			unsigned int modelLocation = glGetUniformLocation(shader.Id, "modelMatrix");
 			glUniformMatrix4fv(modelLocation, 1, GL_FALSE, modelMatrix.get());
 
@@ -92,7 +91,6 @@ Matrix4 Renderer::calculateProjectionMatrix(float width, float height) {
 			0,		2/height,	0,				0,
 			0, 		0,		-(2/(100-0.1f)),		0,
 			0, 		0,		-((100+0.1)/(100-0.1f)),	1);
-	// return Matrix4();
 }
 
 Matrix4 Renderer::createModelMatrix(Vector2 position, float rotation) {
@@ -100,9 +98,8 @@ Matrix4 Renderer::createModelMatrix(Vector2 position, float rotation) {
 						-sin(rotation), cos(rotation), 0, 0,
 						0, 0, 1, 0,
 						0, 0, 0, 1);
-	// Matrix4 rotationMatrix = Matrix4();
-	Matrix4 translationMatrix = Matrix4(	1, 0, 0, 0,
-						0, 1, 0, 0,
+	Matrix4 translationMatrix = Matrix4(	8, 0, 0, 0,
+						0, 8, 0, 0,
 						0, 0, 1, 0,
 						position.x, position.y, -1, 1);
 	return translationMatrix * rotationMatrix;
