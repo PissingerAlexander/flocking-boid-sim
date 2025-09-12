@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
@@ -16,7 +17,7 @@ class Renderer {
 		~Renderer();
 
 		void init(float width, float height);
-		void render(GLFWwindow *window, const std::vector<Boid>& boids);
+		void render(GLFWwindow *window, std::vector<Boid>& boids);
 
 	private:
 		bool running = false;
@@ -27,5 +28,5 @@ class Renderer {
 		unsigned int VAO, VBO, EBO;
 
 		Matrix4 calculateProjectionMatrix(float width, float height);
-		Matrix4 createModelMatrix(Vector2 position, float rotation);
+		Matrix4 createModelMatrix(Vector2 position, Vector2 velocity);
 };

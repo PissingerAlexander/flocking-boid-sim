@@ -33,3 +33,7 @@ Vector2& Vector2::operator-=(const Vector2& v) {
 	y -= v.y;
 	return *this;
 }
+
+Vector2 Vector2::operator*(const float n) {
+	return Vector2(x*n, y*n);
+}

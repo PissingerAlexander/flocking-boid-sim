@@ -5,6 +5,7 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
+#include "constants.h"
 #include "renderer.h"
 
 class Program {

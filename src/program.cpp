@@ -1,4 +1,3 @@
-#include "headers/constants.h"
 #include "headers/program.h"
 
 Program::Program() {
@@ -65,8 +64,9 @@ void Program::run() {
 }
 
 void Program::initBoids(std::vector<Boid>& boids) {
-	boids.push_back(Boid(5.0f, 5.0f, 2.0f));
-	boids.push_back(Boid(-5.0f, -5.0f, 1.0f));
+	for (int i = 0; i < NUM_BOIDS; i++) {
+		boids.push_back(Boid(i));
+	}
 }
 
 void Program::FramebufferSizeCallback(GLFWwindow *window, int width, int height) {

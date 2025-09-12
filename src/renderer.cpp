@@ -18,7 +18,7 @@ void Renderer::init(float width, float height) {
 	viewMatrix = Matrix4();
 }
 
-void Renderer::render(GLFWwindow *window, const std::vector<Boid>& boids) {
+void Renderer::render(GLFWwindow *window, std::vector<Boid>& boids) {
 	// Create shader and load Projection matrix
 	Shader shader = Shader("shaders/shader.vs", "shaders/shader.fs");
 	shader.use();
@@ -32,12 +32,6 @@ void Renderer::render(GLFWwindow *window, const std::vector<Boid>& boids) {
 		0.0f, -0.5f, -1.0f,
 		-0.6f, -1.0f, -1.0f
 	};
-	// float vertices[] = {
-	// 	0.0f, 10.0f, 0.0f,
-	// 	6.0f, -10.0f, 0.0f,
-	// 	0.0f, -5.0f, 0.0f,
-	// 	-6.0f, -10.0f, 0.0f
-	// };
 	unsigned int indices[] = {
 		0, 1, 2,
 		0, 2, 3
@@ -55,30 +49,30 @@ void Renderer::render(GLFWwindow *window, const std::vector<Boid>& boids) {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 	glEnableVertexAttribArray(0);
 
-	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+	float now = 0;
+	float previous = 0;
 	running = true;
 	while (running) {
+		// Handle input
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, GLFW_TRUE);
 		if (glfwWindowShouldClose(window)) {
 			running = false;
 			break;
 		}
-		
-		// Handle input
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, GLFW_TRUE);
 
 		// Clear screen
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		for (const Boid& boid : boids) {
+		for (Boid& boid : boids) {
 			// Create ModelMatrix for each boid
-			Matrix4 modelMatrix = createModelMatrix(boid.position, boid.rotation);
+			Matrix4 modelMatrix = createModelMatrix(boid.position, boid.velocity);
 			unsigned int modelLocation = glGetUniformLocation(shader.Id, "modelMatrix");
 			glUniformMatrix4fv(modelLocation, 1, GL_FALSE, modelMatrix.get());
 
 			// Draw Boid
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			boid.update(1, boids);
 		}
 
 		glfwSwapBuffers(window);
@@ -93,9 +87,10 @@ Matrix4 Renderer::calculateProjectionMatrix(float width, float height) {
 			0, 		0,		-((100+0.1)/(100-0.1f)),	1);
 }
 
-Matrix4 Renderer::createModelMatrix(Vector2 position, float rotation) {
-	Matrix4 rotationMatrix = Matrix4(	cos(rotation), sin(rotation), 0, 0,
-						-sin(rotation), cos(rotation), 0, 0,
+Matrix4 Renderer::createModelMatrix(Vector2 position, Vector2 velocity) {
+	float rotation = std::atan2(velocity.x, velocity.y);
+	Matrix4 rotationMatrix = Matrix4(	cos(rotation), -sin(rotation), 0, 0,
+						sin(rotation), cos(rotation), 0, 0,
 						0, 0, 1, 0,
 						0, 0, 0, 1);
 	Matrix4 translationMatrix = Matrix4(	8, 0, 0, 0,
