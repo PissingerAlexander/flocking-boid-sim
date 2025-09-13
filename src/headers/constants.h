@@ -1,8 +1,18 @@
 #pragma once
 
 #define PI 3.14159265358979323846264338327950288419716939937510582
-#define WIDTH 1280
-#define HEIGHT 720
+
+// #define WIDTH 1280
+// #define HEIGHT 720
+#define WIDTH 1920
+#define HEIGHT 1080
+
+
 
 #define NUM_BOIDS 100
-#define MAX_SPEED 10
+#define MAX_SPEED 300
+#define MIN_SPEED 100
+
+#define INFLUENCE_RANGE 5
+
+#define SEPARATION 0.01

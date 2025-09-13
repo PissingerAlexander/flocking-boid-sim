@@ -49,8 +49,10 @@ void Renderer::render(GLFWwindow *window, std::vector<Boid>& boids) {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 	glEnableVertexAttribArray(0);
 
-	float now = 0;
-	float previous = 0;
+	unsigned int frames = 1;
+	float current;
+	float previous = glfwGetTime();
+	float deltaTime;
 	running = true;
 	while (running) {
 		// Handle input
@@ -59,6 +61,9 @@ void Renderer::render(GLFWwindow *window, std::vector<Boid>& boids) {
 			running = false;
 			break;
 		}
+
+		current = glfwGetTime();
+		deltaTime = current - previous;
 
 		// Clear screen
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -72,11 +77,13 @@ void Renderer::render(GLFWwindow *window, std::vector<Boid>& boids) {
 
 			// Draw Boid
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			boid.update(1, boids);
+			boid.update(deltaTime, boids);
 		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		frames++;
+		previous = current;
 	}
 }
 
