@@ -10,12 +10,17 @@ Boid::Boid(unsigned int id): id(id) {
 	velocity *= speed;
 }
 
+Boid::Boid(unsigned int id, float x, float y): id(id), position(x, y) {
+	velocity.x = 2.0f;
+	velocity.y = 0.0f;
+	velocity;
+
+};
+
 Boid::~Boid() {};
 
 void Boid::update(const float delta, const std::vector<Boid>& boids) {
-	for (Boid boid : boids) {
-		if (boid.id == id) continue;
-	}
+	applySteer(boids);
 
 	if (velocity.magnitude() > MAX_SPEED) velocity = velocity.normalized() * MAX_SPEED;
 	if (velocity.magnitude() < MIN_SPEED) velocity = velocity.normalized() * MIN_SPEED;
@@ -29,18 +34,28 @@ void Boid::update(const float delta, const std::vector<Boid>& boids) {
 
 void Boid::applySteer(const std::vector<Boid>& boids) {
 	// TODO: possibly account amount of neibours
-	// unsigned int neighbours = 0;
-	Vector2 direction = Vector2(0, 0);
+	unsigned int neighbours = 0;
+	Vector2 separation = Vector2(0, 0);
+	Vector2 alignment = Vector2(0, 0);
+	Vector2 cohesion = Vector2(0, 0);
 	for (Boid boid : boids) {
 		if (boid.id == id) continue;
 
-		Vector2 distance = boid.position - position;
+		Vector2 distance = position - boid.position;
 		if (distance.magnitude() > INFLUENCE_RANGE) continue;
 
-		// neighbours++;
-		direction += boid.velocity;
+		neighbours++;
+		// SEPARATION
+		separation += distance * (1/distance.magnitude());
+
+		// ALIGNMENT
+		alignment += boid.velocity.normalized();
 	}
+	if (neighbours == 0) return;
+
+	separation = (separation/neighbours) * SEPARATION;
+	alignment = (alignment/neighbours) * ALIGNMENT;
 	
-	direction = direction.normalized() * -1;
-	velocity += direction * SEPARATION;
+	Vector2 steer = separation;
+	velocity += steer;
 }

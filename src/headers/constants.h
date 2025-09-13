@@ -10,9 +10,12 @@
 
 
 #define NUM_BOIDS 100
-#define MAX_SPEED 300
-#define MIN_SPEED 100
+// #define MAX_SPEED 300
+// #define MIN_SPEED 100
+#define MAX_SPEED 100
+#define MIN_SPEED 50
 
-#define INFLUENCE_RANGE 5
+#define INFLUENCE_RANGE 70
 
 #define SEPARATION 0.01
+#define ALIGNMENT 0.6
