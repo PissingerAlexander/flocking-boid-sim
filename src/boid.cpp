@@ -46,16 +46,26 @@ void Boid::applySteer(const std::vector<Boid>& boids) {
 
 		neighbours++;
 		// SEPARATION
-		separation += distance * (1/distance.magnitude());
+		if (distance.magnitude() < SEPARATION_RANGE) {
+			separation += distance.normalized(); 
+			// separation += distance * (1/(distance.magnitude()*distance.magnitude()));
+		}
 
 		// ALIGNMENT
 		alignment += boid.velocity.normalized();
+
+		// COHESION
+		cohesion += boid.position;
 	}
 	if (neighbours == 0) return;
 
-	separation = (separation/neighbours) * SEPARATION;
-	alignment = (alignment/neighbours) * ALIGNMENT;
+	separation *= SEPARATION;
+	alignment = alignment.normalized() * ALIGNMENT;
 	
-	Vector2 steer = separation;
+	cohesion /= neighbours;
+	cohesion = cohesion - position;
+	cohesion = cohesion.normalized() * COHESION;
+
+	Vector2 steer = separation + alignment + cohesion;
 	velocity += steer;
 }
