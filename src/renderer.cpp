@@ -27,10 +27,10 @@ void Renderer::render(GLFWwindow *window, std::vector<Boid>& boids) {
 	
 	// Define Vertex and index data for boid
 	float vertices[] = {
-		0.0f, 1.0f, -1.0f,
-		0.6f, -1.0f, -1.0f,
-		0.0f, -0.5f, -1.0f,
-		-0.6f, -1.0f, -1.0f
+		0.0f, 0.5f, -0.5f,
+		0.3f, -0.5f, -0.5f,
+		0.0f, -0.25f, -0.5f,
+		-0.3f, -0.5f, -0.5f
 	};
 	unsigned int indices[] = {
 		0, 1, 2,
