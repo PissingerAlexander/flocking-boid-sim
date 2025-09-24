@@ -25,6 +25,7 @@ void Boid::update(const float delta, const std::vector<Boid>& boids) {
 	if (velocity.magnitude() > MAX_SPEED) velocity = velocity.normalized() * MAX_SPEED;
 	if (velocity.magnitude() < MIN_SPEED) velocity = velocity.normalized() * MIN_SPEED;
 	position += velocity * delta;
+	velocity *= FRICTION;
 
 	if (position.x < -(WIDTH/2)) position.x = WIDTH/2;
 	else if (position.x > WIDTH/2) position.x = -(WIDTH/2);
@@ -42,12 +43,16 @@ void Boid::applySteer(const std::vector<Boid>& boids) {
 		if (boid.id == id) continue;
 
 		Vector2 distance = position - boid.position;
-		if (distance.magnitude() > INFLUENCE_RANGE) continue;
-
+		float distanceMagnitude = distance.magnitude();
+		if (distanceMagnitude > INFLUENCE_RANGE) continue;
 		neighbours++;
+
 		// SEPARATION
-		if (distance.magnitude() < SEPARATION_RANGE) {
-			separation += distance.normalized(); 
+		if (distanceMagnitude < SEPARATION_RANGE) {
+			float weight = (distanceMagnitude * distanceMagnitude) / 100;
+
+			separation += distance.normalized() * weight;
+			// separation += distance.normalized();
 			// separation += distance * (1/(distance.magnitude()*distance.magnitude()));
 		}
 
@@ -57,15 +62,29 @@ void Boid::applySteer(const std::vector<Boid>& boids) {
 		// COHESION
 		cohesion += boid.position;
 	}
-	if (neighbours == 0) return;
+	Vector2 randomNoise = Vector2(
+		(float)(rand() % 200 - 100) / 100.0f,
+		(float)(rand() % 200 - 100) / 100.0f
+	);
+	randomNoise = randomNoise.normalized() * NOISE;
+	if (neighbours == 0) {
+		velocity += randomNoise;
+		return;
+	}
 
 	separation *= SEPARATION;
-	alignment = alignment.normalized() * ALIGNMENT;
-	
-	cohesion /= neighbours;
-	cohesion = cohesion - position;
-	cohesion = cohesion.normalized() * COHESION;
 
-	Vector2 steer = separation + alignment + cohesion;
+	if (alignment.magnitude() > 0) {
+		alignment = alignment.normalized() * ALIGNMENT;
+	}
+	
+	if (cohesion.magnitude() > 0) {
+		cohesion /= neighbours;
+		cohesion = cohesion - position;
+		cohesion = cohesion.normalized() * COHESION;
+	}
+
+
+	Vector2 steer = separation + alignment + cohesion + randomNoise;
 	velocity += steer;
 }
