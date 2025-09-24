@@ -2,22 +2,26 @@
 
 #define PI 3.14159265358979323846264338327950288419716939937510582
 
-#define WIDTH 1280
-#define HEIGHT 720
-// #define WIDTH 1920
-// #define HEIGHT 1080
+// #define WIDTH 1280
+// #define HEIGHT 720
+#define WIDTH 1920
+#define HEIGHT 1080
 
 
 
-#define NUM_BOIDS 100
+// #define NUM_BOIDS 4
+#define NUM_BOIDS 500
 // #define MAX_SPEED 300
 // #define MIN_SPEED 100
-#define MAX_SPEED 100
+#define MAX_SPEED 200
 #define MIN_SPEED 50
+#define FRICTION 0.95
 
-#define INFLUENCE_RANGE 70
-#define SEPARATION_RANGE 30
+#define INFLUENCE_RANGE 40
+#define SEPARATION_RANGE 20
 
-#define SEPARATION 0.6
-#define ALIGNMENT 0.6
-#define COHESION 0.6
+#define SEPARATION 0.9
+#define ALIGNMENT 6
+#define COHESION 0.3
+
+#define NOISE 2
