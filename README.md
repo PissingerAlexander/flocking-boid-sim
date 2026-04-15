@@ -1,4 +1,4 @@
-# Learn OpenGL Tutorial Series
+# Started from Learn OpenGL tutorial, implemented a flocking boid sim
 Tutorial from [LearnOpenGL.com](https://learnopengl.com/)
 
 ---
