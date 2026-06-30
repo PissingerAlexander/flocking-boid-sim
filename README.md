@@ -16,7 +16,7 @@ Install [glfw](https://www.glfw.org/) and [glad](https://gen.glad.sh/)
 3. [Compile](https://www.glfw.org/docs/latest/compile_guide.html) and install (`cmake install`) with cmake
 
 ### glad
-1. Download latest [glad](https://gen.gald.sh/)
+1. Download latest [glad](https://gen.glad.sh/)
     * use gl Version 3.3
     * Core (not Compatibility)
     * tick `loader` option
